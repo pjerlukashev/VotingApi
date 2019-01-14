@@ -53,10 +53,23 @@ public class User extends AbstractNamedEntity  {
 
     public User(){}
 
-    public User(Integer id, String name, Restaurant vote) {
-        super(id, name);
-        this.vote = vote;
+    public User(User u) {
+        this(u.getId(), u.getName(), u.getEmail(), u.getPassword(), u.isEnabled(), u.getRegistered(), u.getRoles());
     }
+
+    public User(Integer id, String name, String email, String password, Roles role, Roles... roles) {
+        this(id, name, email, password,  true, new Date(), EnumSet.of(role, roles));
+    }
+
+    public User(Integer id, String name, String email, String password, boolean enabled, Date registered, Collection<Roles> roles) {
+        super(id, name);
+        this.email = email;
+        this.password = password;
+        this.enabled = enabled;
+        this.registered = registered;
+        setRoles(roles);
+    }
+
 
     public String getEmail() {
         return email;
