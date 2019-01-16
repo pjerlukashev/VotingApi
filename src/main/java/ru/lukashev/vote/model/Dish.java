@@ -1,5 +1,7 @@
 package ru.lukashev.vote.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -11,19 +13,20 @@ import javax.validation.constraints.NotNull;
 })
 
 @Entity
-@Table(name = "meals", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "restaurant_id"}, name = "dish_restaurant_unique_name_idx")})
+@Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "restaurant_id"}, name = "dish_restaurant_unique_name_idx")})
 public class Dish extends AbstractNamedEntity {
 
-    public static final String ALL_SORTED = "Meal.getAll";
-    public static final String DELETE = "Meal.delete";
+    public static final String ALL_SORTED = "Dish.getAll";
+    public static final String DELETE = "Dish.delete";
 
     @Column(name = "price", nullable = false)
     @NotNull
     @Range(min = 1, max = 5000)
     private Integer price;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Restaurant restaurant;
 
    public Dish(){}

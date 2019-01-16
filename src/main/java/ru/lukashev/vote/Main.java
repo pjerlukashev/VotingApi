@@ -21,7 +21,7 @@ public class Main {
         Restaurant restaurant4 = new Restaurant(4, "Koryushka");
         Restaurant restaurant5 = new Restaurant(5, "MyLove");
 
-        User user1 = new User(1, "Kolya", restaurant5);
+       /* User user1 = new User(1, "Kolya", restaurant5);
         User user2 = new User(2, "Max", restaurant1);
         User user3 = new User(3, "Ilya", restaurant1);
         User user4 = new User(4, "Petya", restaurant3);
@@ -32,15 +32,15 @@ public class Main {
         User user9 = new User(9, "Alex", restaurant3);
         User user10 = new User(10, "Alexey", restaurant2);
         User user11 = new User(11, "Katya", restaurant5);
+*/
+     //   List<User> users = List.of(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11);
 
-        List<User> users = List.of(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11);
-
-        System.out.println(VoteUtil.getRatings(users));
+      /*  System.out.println(VoteUtil.getRatings(users));
         System.out.println("///////////////");
         LOG.debug("getting winner");
         System.out.println(VoteUtil.getWinner(users));
         System.out.println("///////////////");
-        System.out.println(VoteUtil.getRatingsInPercents(users));
+        System.out.println(VoteUtil.getRatingsInPercents(users));*/
 
     }
 }

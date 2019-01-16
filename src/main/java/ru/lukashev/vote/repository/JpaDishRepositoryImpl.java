@@ -17,6 +17,7 @@ public class JpaDishRepositoryImpl implements DishRepository {
     private EntityManager em;
 
     @Override
+    @Transactional
     public Dish save(Dish dish, int restaurantId) {
 
         if(!dish.isNew() && get(dish.getId(), restaurantId)==null){return null;}
@@ -48,7 +49,7 @@ public class JpaDishRepositoryImpl implements DishRepository {
     @Override
     public List<Dish> getAll(int restaurantId) {
         return em.createNamedQuery(Dish.ALL_SORTED, Dish.class)
-                .setParameter("userId",  restaurantId)
+                .setParameter("restaurantId",  restaurantId)
                 .getResultList();
     }
 }

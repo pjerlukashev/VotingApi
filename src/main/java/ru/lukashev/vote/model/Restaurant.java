@@ -4,16 +4,16 @@ import javax.persistence.*;
 import java.util.List;
 
 @NamedQueries({
-        @NamedQuery(name = Restaurant.DELETE, query = "DELETE FROM Restaurant u WHERE u.id=:id"),
-        @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM Restaurant u LEFT JOIN FETCH u.dishes ORDER BY u.name")
+        @NamedQuery(name = Restaurant.DELETE, query = "DELETE FROM Restaurant r WHERE r.id=:id"),
+        @NamedQuery(name = Restaurant.ALL_SORTED, query = "SELECT r FROM Restaurant r  ORDER BY r.name")
 })
 
 @Entity
-@Table(name = "restaurant", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"}, name = "restaurants_unique_name_idx")})
+@Table(name = "restaurants", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"}, name = "restaurants_unique_name_idx")})
 public class Restaurant extends AbstractNamedEntity {
 
     public static final String DELETE = "Restaurant.delete";
-    public static final String ALL_SORTED = "User.getAllSorted";
+    public static final String ALL_SORTED = "Restaurant.getAllSorted";
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "restaurant")
     private List<Dish> menu;

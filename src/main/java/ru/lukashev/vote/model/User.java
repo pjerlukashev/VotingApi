@@ -1,17 +1,21 @@
 package ru.lukashev.vote.model;
 
+import org.springframework.util.CollectionUtils;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Collection;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.Set;
 
 @NamedQueries({
         @NamedQuery(name = User.DELETE, query = "DELETE FROM User u WHERE u.id=:id"),
         @NamedQuery(name = User.BY_EMAIL, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles WHERE u.email=?1"),
-        @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u LEFT JOIN FETCH u.roles ORDER BY u.name, u.email"),
+        @NamedQuery(name = User.ALL_SORTED, query = "SELECT u FROM User u ORDER BY u.name, u.email"),
 })
 
 
@@ -47,7 +51,7 @@ public class User extends AbstractNamedEntity  {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Roles> roles;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="restaurant_id")
     private Restaurant vote;
 
@@ -107,8 +111,8 @@ public class User extends AbstractNamedEntity  {
         return roles;
     }
 
-    public void setRoles(Set<Roles> roles) {
-        this.roles = roles;
+    public void setRoles(Collection<Roles> roles) {
+        this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Roles.class) : EnumSet.copyOf(roles);
     }
 
     public Restaurant getVote() {

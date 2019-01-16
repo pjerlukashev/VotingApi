@@ -16,6 +16,10 @@ public class JpaUserRepository implements UserRepository {
     @PersistenceContext
     private EntityManager em;
 
+    @Override
+    public List<User> getAll() {
+        return em.createNamedQuery(User.ALL_SORTED, User.class).getResultList();
+    }
 
     @Override
     @Transactional
@@ -31,7 +35,6 @@ public class JpaUserRepository implements UserRepository {
     @Override
     @Transactional
     public boolean delete(int id) {
-
         return em.createNamedQuery(User.DELETE)
                 .setParameter("id", id)
                 .executeUpdate() != 0;
@@ -48,10 +51,5 @@ public class JpaUserRepository implements UserRepository {
                 .setParameter(1, email)
                 .getResultList();
         return DataAccessUtils.singleResult(users);
-    }
-
-    @Override
-    public List<User> getAll() {
-        return em.createNamedQuery(User.ALL_SORTED, User.class).getResultList();
     }
 }

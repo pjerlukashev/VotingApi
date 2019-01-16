@@ -5,8 +5,8 @@ DELETE FROM restaurants;
 ALTER SEQUENCE global_seq RESTART WITH 100000;
 
 INSERT INTO users (name, email, password ) VALUES
-  ('User', 'user@yandex.ru', '{noop}password'),
-  ('Admin', 'admin@gmail.com', '{noop}admin');
+  ('User', 'user@yandex.ru', 'password'),
+  ('Admin', 'admin@gmail.com', 'admin');
 
 INSERT INTO user_roles (role, user_id) VALUES
   ('ROLE_USER', 100000),
@@ -18,19 +18,18 @@ VALUES ('Metropol'),
        ('Ivanyich'),
        ('U berez'),
        ('Koryushka'),
-       ('MyLove'),
-       ( 'Mr Jones'),
-       ('Leshenko'),
-       ('Absolut');
+       ('MyLove');
 
 INSERT INTO dishes (name, price, restaurant_id) VALUES
 
-     ('Borsh', 100, 100002),
-     ('Soup', 80, 100003),
-     ('Lamb', 130, 100004),
-     ('Salmon', 150, 100005),
-     ('Salmon', 200, 100006),
-     ('Salad', 70, 100007),
-     ('Ice-cream', 50, 100008),
-     ('Roast', 160, 100009),
-     ('Ham', 100, 100002);
+     ('Borsch', 80, 100002),
+     ('Solyanka', 120, 100003),
+     ('Pork', 160, 100004),
+     ('Roast', 170, 100005),
+     ('Eggs', 90, 100006),
+     ('Salad', 70, 100002),
+     ('Ice-cream', 60, 100004),
+     ('Chicken-soup', 90, 100003),
+     ('Salmon', 200, 100002),
+     ('Wok', 180, 100002),
+     ('Pizza', 150, 100002);
