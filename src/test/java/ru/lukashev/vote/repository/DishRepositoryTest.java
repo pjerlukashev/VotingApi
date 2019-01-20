@@ -11,12 +11,13 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ru.lukashev.vote.DishTestData;
 import ru.lukashev.vote.TimingExtension;
 import ru.lukashev.vote.model.Dish;
+import ru.lukashev.vote.util.exception.NotFoundException;
+
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static ru.lukashev.vote.DishTestData.*;
 import static ru.lukashev.vote.RestaurantTestData.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SpringJUnitConfig(locations = {
@@ -46,7 +47,7 @@ public class DishRepositoryTest {
 
     @Test
     void deleteNotFound() throws Exception {
-        assertFalse(repository.delete(DISH1_ID, 1));
+        assertThrows(NotFoundException.class, ()->repository.delete(DISH1_ID, 1));
     }
 
     @Test
@@ -64,7 +65,7 @@ public class DishRepositoryTest {
 
     @Test
     void getNotFound() throws Exception {
-        assertNull(repository.get(DISH1_ID, 100003));
+     assertThrows(NotFoundException.class, () -> repository.get(DISH1_ID, 100003));
     }
 
     @Test

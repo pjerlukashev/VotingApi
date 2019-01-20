@@ -3,7 +3,9 @@ package ru.lukashev.vote.repository;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import ru.lukashev.vote.model.User;
+import ru.lukashev.vote.util.ValidationUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,32 +26,36 @@ public class JpaUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
+        Assert.notNull(user, "user must not be null");
+        User result;
         if (user.isNew()) {
             em.persist(user);
-            return user;
+            result = user;
         } else {
-            return em.merge(user);
+            result = em.merge(user);
         }
+        return ValidationUtil.checkNotFoundWithId(result, user.getId());
     }
 
     @Override
     @Transactional
-    public boolean delete(int id) {
-        return em.createNamedQuery(User.DELETE)
+    public void delete(int id) {
+        ValidationUtil.checkNotFoundWithId(em.createNamedQuery(User.DELETE)
                 .setParameter("id", id)
-                .executeUpdate() != 0;
+                .executeUpdate() != 0, id);
     }
 
     @Override
     public User get(int id) {
-        return em.find(User.class, id);
+        return ValidationUtil.checkNotFoundWithId(em.find(User.class, id), id);
     }
 
     @Override
     public User getByEmail(String email) {
+        Assert.notNull(email, "email must not be null");
         List<User> users = em.createNamedQuery(User.BY_EMAIL, User.class)
                 .setParameter(1, email)
                 .getResultList();
-        return DataAccessUtils.singleResult(users);
+        return ValidationUtil.checkNotFound(DataAccessUtils.singleResult(users), "email=" + email);
     }
 }

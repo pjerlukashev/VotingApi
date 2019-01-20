@@ -9,7 +9,7 @@ public interface UserRepository {
     User save(User user);
 
     // false if not found
-    boolean delete(int id);
+    void delete(int id);
 
     // null if not found
     User get(int id);

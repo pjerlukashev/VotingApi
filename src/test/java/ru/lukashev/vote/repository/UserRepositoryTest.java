@@ -12,12 +12,11 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import ru.lukashev.vote.TimingExtension;
 import ru.lukashev.vote.model.Roles;
 import ru.lukashev.vote.model.User;
+import ru.lukashev.vote.util.exception.NotFoundException;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.lukashev.vote.UserTestData.*;
 
@@ -91,11 +90,11 @@ public class UserRepositoryTest {
 
    @Test
     void deleteNotFound() throws Exception{
-     assertFalse(repository.delete(10));
+     assertThrows(NotFoundException.class, ()->repository.delete(10));
     }
 
     @Test
     void getNotFound()throws Exception{
-        assertNull(repository.get(10));
+        assertThrows(NotFoundException.class, ()-> repository.get(10));
     }
 }

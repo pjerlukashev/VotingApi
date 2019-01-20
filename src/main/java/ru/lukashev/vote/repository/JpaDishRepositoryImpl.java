@@ -2,8 +2,11 @@ package ru.lukashev.vote.repository;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import ru.lukashev.vote.model.Dish;
 import ru.lukashev.vote.model.Restaurant;
+import ru.lukashev.vote.util.ValidationUtil;
+import ru.lukashev.vote.util.exception.NotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -19,31 +22,35 @@ public class JpaDishRepositoryImpl implements DishRepository {
     @Override
     @Transactional
     public Dish save(Dish dish, int restaurantId) {
-
-        if(!dish.isNew() && get(dish.getId(), restaurantId)==null){return null;}
+        Assert.notNull(dish, "dish must not be null");
+        Dish result;
+        if(!dish.isNew() && get(dish.getId(), restaurantId)==null){result=null; }
         dish.setRestaurant(em.getReference(Restaurant.class, restaurantId));
         if (dish.isNew()){
             em.persist(dish);
-            return dish;
+            result = dish;
         }
         else{
-            return em.merge(dish);
+            result = em.merge(dish);
         }
+        return ValidationUtil.checkNotFoundWithId(result, dish.getId());
     }
 
     @Override
     @Transactional
-    public boolean delete(int id, int restaurantId) {
-        return em.createNamedQuery(Dish.DELETE)
+    public void delete(int id, int restaurantId) {
+        ValidationUtil.checkNotFoundWithId(em.createNamedQuery(Dish.DELETE)
                 .setParameter("id", id)
                 .setParameter("restaurantId", restaurantId)
-                .executeUpdate() != 0;
+                .executeUpdate() != 0, id);
     }
 
     @Override
     public Dish get(int id, int restaurantId) {
+        Dish result;
         Dish dish = em.find(Dish.class, id);
-        return dish != null &&dish.getRestaurant().getId() == restaurantId ? dish : null;
+        result = dish != null &&dish.getRestaurant().getId() == restaurantId ? dish : null;
+        return ValidationUtil.checkNotFoundWithId(result, id);
     }
 
     @Override
