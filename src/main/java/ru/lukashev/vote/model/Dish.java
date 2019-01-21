@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @NamedQueries({
         @NamedQuery(name = Dish.ALL_SORTED, query = "SELECT m FROM Dish m WHERE m.restaurant.id=:restaurantId ORDER BY m.name ASC"),
@@ -24,10 +25,14 @@ public class Dish extends AbstractNamedEntity {
     @Range(min = 1, max = 5000)
     private Integer price;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Restaurant restaurant;
+
+    @Column(name = "date_added", nullable = false)
+    @NotNull
+    private LocalDate dateAdded;
 
    public Dish(){}
 
@@ -47,8 +52,13 @@ public class Dish extends AbstractNamedEntity {
         this.restaurant = restaurant;
     }
 
+    public LocalDate getDateAdded() {
+        return dateAdded;
+    }
+
     public Dish(Integer id, String name, Integer price) {
         super(id, name);
         this.price = price;
+        this.dateAdded = LocalDate.now();
     }
 }

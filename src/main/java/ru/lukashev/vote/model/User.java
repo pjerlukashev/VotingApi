@@ -7,10 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.*;
 
 @NamedQueries({
         @NamedQuery(name = User.DELETE, query = "DELETE FROM User u WHERE u.id=:id"),
@@ -50,10 +47,6 @@ public class User extends AbstractNamedEntity  {
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Roles> roles;
-
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="restaurant_id")
-    private Restaurant vote;
 
     public User(){}
 
@@ -115,18 +108,10 @@ public class User extends AbstractNamedEntity  {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Roles.class) : EnumSet.copyOf(roles);
     }
 
-    public Restaurant getVote() {
-        return vote;
-    }
-
-    public void setVote(Restaurant vote) {
-        this.vote = vote;
-    }
-
     @Override
     public String toString() {
         return "User{" +
-                "vote=" + vote +
+                "vote=" +
                 ", id=" + id +
                 ", name='" + name + '\'' +
                 '}';

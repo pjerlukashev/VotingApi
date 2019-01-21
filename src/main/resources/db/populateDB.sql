@@ -33,3 +33,7 @@ INSERT INTO dishes (name, price, restaurant_id) VALUES
      ('Salmon', 200, 100002),
      ('Wok', 180, 100002),
      ('Pizza', 150, 100002);
+
+INSERT INTO votes(USER_ID, RESTAURANT_ID) VALUES
+    (100000, 100002),
+     (100001, 100005);
