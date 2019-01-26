@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class VoteUtil {
 
-    public static Map<Restaurant, Integer> getRatings(List<User> users){
+   /* public static Map<Restaurant, Integer> getRatings(List<User> users){
         Objects.requireNonNull(users, "users cannot be null");
         return users.stream().collect(Collectors.groupingBy(User::getVote,  Collectors.summingInt(user->  1 )));
     }
@@ -32,5 +32,5 @@ public class VoteUtil {
             result.put((Restaurant) entry.getKey(), value);
         }
         return result;
-    }
+    }*/
 }

@@ -17,6 +17,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
+/*
 @RestController
 @RequestMapping(UserController.REST_URL)
 public class UserController {
@@ -78,6 +79,7 @@ public class UserController {
     }
 }
 
+*/
 
 
 
