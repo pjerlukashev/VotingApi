@@ -4,6 +4,7 @@ import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+import ru.lukashev.vote.model.User;
 import ru.lukashev.vote.model.Vote;
 import ru.lukashev.vote.util.ValidationUtil;
 import ru.lukashev.vote.util.exception.NotFoundException;
@@ -21,29 +22,30 @@ public class JpaVoteRepository implements VoteRepository  {
 
     @Override
     public Vote get(int userId, LocalDate date) {
-        Assert.notNull(date, "date must not b null");
+        Assert.notNull(date, "date must not be null");
         List<Vote> votes = em.createNamedQuery(Vote.GET, Vote.class)
                 .setParameter("date", date).setParameter("userId", userId)
                 .getResultList();
         return ValidationUtil.checkNotFound(DataAccessUtils.singleResult(votes), "userId=" +userId + "date=" + date );
     }
 
-    @Override
+    /*@Override
     public List<Vote> getAllForRestaurant(int restaurantId) {
-        return em.createNamedQuery(Vote.ALL_FOR_RESTAURANT, Vote.class).setParameter( "restaurantId ", restaurantId ).getResultList();
-    }
+        return em.createNamedQuery(Vote.ALL_FOR_RESTAURANT, Vote.class).setParameter( "restaurantId", restaurantId ).getResultList();
+    }*/
 
     @Override
     public List<Vote> getAll() {
         return em.createNamedQuery(Vote.ALL_SORTED, Vote.class).getResultList();
     }
 
-    @Override
+   /* @Override
     public List<Vote> getVotingResults(LocalDate date) {
         return em.createNamedQuery(Vote.GET_VOTING_RESULTS, Vote.class).setParameter("date", date).getResultList();
-    }
+    }*/
 
     @Override
+    @Transactional
     public void delete(int id) {
         ValidationUtil.checkNotFoundWithId(em.createNamedQuery(Vote.DELETE)
                 .setParameter("id", id)
@@ -51,22 +53,33 @@ public class JpaVoteRepository implements VoteRepository  {
     }
 
     @Override
+    @Transactional
     public void deleteAllOnDate(LocalDate date) {
-      if (em.createNamedQuery(Vote.DELETE_ALL_ON_DATE, Vote.class).setParameter("date", date).executeUpdate()==0) {
+      if (em.createNamedQuery(Vote.DELETE_ALL_ON_DATE).setParameter("date", date).executeUpdate()==0) {
           throw new NotFoundException("Not entities found with date=" + date);
       }
     }
 
     @Override
-    public Vote save(Vote vote) {
+    @Transactional
+    public Vote save(Vote vote, int userId) {
         Assert.notNull(vote, "vote must not be null");
         Vote result;
-        if (vote.isNew()) {
+        Vote stored;
+        try {
+             stored = get(userId, vote.getDate());
+        }catch (NotFoundException e){stored = null; }
+
+        if(!vote.isNew() && stored == null){ ValidationUtil.checkNotFoundWithId(null, vote.getId()); }
+        if(!vote.isNew() && !stored.getId().equals(vote.getId())){ ValidationUtil.checkNotFoundWithId(null, vote.getId()); }
+        vote.setUser(em.getReference(User.class, userId));
+        if (vote.isNew()){
             em.persist(vote);
             result = vote;
-        } else {
+        }
+        else{
             result = em.merge(vote);
         }
-        return ValidationUtil.checkNotFoundWithId(result, vote.getId());
+        return ValidationUtil.checkNotFoundWithId(result, result.getId());
     }
 }

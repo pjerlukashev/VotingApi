@@ -10,15 +10,11 @@ public interface VoteRepository {
 
     Vote get(int userId, LocalDate date);
 
-    List<Vote> getAllForRestaurant(int restaurantId);
-
     List<Vote>  getAll();
-
-    List<Vote> getVotingResults(LocalDate date);
 
     void delete(int id);
 
     void deleteAllOnDate(LocalDate date);
 
-    Vote save(Vote vote);
+    Vote save(Vote vote, int userId);
 }
