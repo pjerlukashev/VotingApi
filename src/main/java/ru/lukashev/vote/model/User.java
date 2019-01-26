@@ -48,6 +48,17 @@ public class User extends AbstractNamedEntity  {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<Roles> roles;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Vote> votes;
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
     public User(){}
 
     public User(User u) {
