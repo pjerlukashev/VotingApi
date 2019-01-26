@@ -6,7 +6,6 @@ import org.springframework.util.Assert;
 import ru.lukashev.vote.model.Dish;
 import ru.lukashev.vote.model.Restaurant;
 import ru.lukashev.vote.util.ValidationUtil;
-import ru.lukashev.vote.util.exception.NotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,7 +23,7 @@ public class JpaDishRepositoryImpl implements DishRepository {
     public Dish save(Dish dish, int restaurantId) {
         Assert.notNull(dish, "dish must not be null");
         Dish result;
-        if(!dish.isNew() && get(dish.getId(), restaurantId)==null){result=null; }
+        if(!dish.isNew() && get(dish.getId(), restaurantId)==null){ ValidationUtil.checkNotFoundWithId(null, dish.getId()); }
         dish.setRestaurant(em.getReference(Restaurant.class, restaurantId));
         if (dish.isNew()){
             em.persist(dish);
@@ -57,6 +56,13 @@ public class JpaDishRepositoryImpl implements DishRepository {
     public List<Dish> getAll(int restaurantId) {
         return em.createNamedQuery(Dish.ALL_SORTED, Dish.class)
                 .setParameter("restaurantId",  restaurantId)
+                .getResultList();
+    }
+
+    @Override
+    public List<Dish> getEnabled(int restaurantId) {
+        return  em.createNamedQuery(Dish.GET_ENABLED, Dish.class)
+                .setParameter("restaurantId",  restaurantId).setParameter("enabled" , true)
                 .getResultList();
     }
 }

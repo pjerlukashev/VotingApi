@@ -79,4 +79,10 @@ public class DishRepositoryTest {
     void getAll() throws Exception {
         DishTestData.assertMatch(repository.getAll(RESTAURANT1_ID), List.of( DISH1, DISH11, DISH6,DISH9,DISH10));
     }
+
+    @Test
+    void getAllEnabled() throws Exception{
+        DishTestData.assertMatch(repository.getEnabled(RESTAURANT1_ID), List.of( DISH1,DISH9,DISH10));
+    }
+
 }

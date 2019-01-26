@@ -8,9 +8,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+
 @NamedQueries({
         @NamedQuery(name = Dish.ALL_SORTED, query = "SELECT m FROM Dish m WHERE m.restaurant.id=:restaurantId ORDER BY m.name ASC"),
         @NamedQuery(name = Dish.DELETE, query = "DELETE FROM Dish m WHERE m.id=:id AND m.restaurant.id=:restaurantId"),
+        @NamedQuery(name = Dish.GET_ENABLED, query = "SELECT m FROM Dish m WHERE m.restaurant.id=:restaurantId AND m.enabled =: enabled ORDER BY m.name ASC"),
 })
 
 @Entity
@@ -19,6 +21,7 @@ public class Dish extends AbstractNamedEntity {
 
     public static final String ALL_SORTED = "Dish.getAll";
     public static final String DELETE = "Dish.delete";
+    public static final String GET_ENABLED = "Dish.getEnabled";
 
     @Column(name = "price", nullable = false)
     @NotNull
@@ -30,11 +33,19 @@ public class Dish extends AbstractNamedEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Restaurant restaurant;
 
-    @Column(name = "date_added", nullable = false)
+    @Column(name = "enabled", nullable = false)
     @NotNull
-    private LocalDate dateAdded;
+    private boolean enabled;
+
+    @Column(name = "date", columnDefinition = "timestamp default now()")
+    @NotNull
+    private LocalDate date;
 
    public Dish(){}
+
+    public LocalDate getDate() {
+        return date;
+    }
 
     public Integer getPrice() {
         return price;
@@ -52,13 +63,28 @@ public class Dish extends AbstractNamedEntity {
         this.restaurant = restaurant;
     }
 
-    public LocalDate getDateAdded() {
-        return dateAdded;
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public Dish(Integer id, String name, Integer price) {
         super(id, name);
         this.price = price;
-        this.dateAdded = LocalDate.now();
+        this.enabled = true;
+        this.date= LocalDate.now();
+   }
+
+    public Dish(Integer id, String name, Integer price, boolean enabled) {
+        super(id, name);
+        this.price = price;
+        this.enabled = enabled;
     }
+    public Dish(String name, Integer price) {
+        this(null, name, price);
+    }
+
 }
