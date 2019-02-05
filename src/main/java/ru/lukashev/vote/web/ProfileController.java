@@ -19,8 +19,8 @@ import static ru.lukashev.vote.util.UserUtil.updateFromTo;
 import static ru.lukashev.vote.util.ValidationUtil.checkNew;
 
 @RestController
-@RequestMapping(ProfileRestController.REST_URL)
-public class ProfileRestController {
+@RequestMapping(ProfileController.REST_URL)
+public class ProfileController {
     static final String REST_URL = "/rest/profile";
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -43,7 +43,7 @@ public class ProfileRestController {
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<User> register(UserTo userTo) {
+    public ResponseEntity<User> register(@RequestBody UserTo userTo) {
         User user = UserUtil.createNewFromTo(userTo);
         log.info("create {}", user);
         checkNew(user);
@@ -57,13 +57,13 @@ public class ProfileRestController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(UserTo userTo) {
+    public void update(@RequestBody UserTo userTo) {
         log.info("update {} with id={}", userTo, SecurityUtil.authUserId());
         User user = updateFromTo(repository.get(userTo.getId()), userTo);
         ValidationUtil.assureIdConsistent(user, SecurityUtil.authUserId());
         repository.save(user);
     }
 
-    public void login(UserTo userTo) {//написать метод}
+    public void login(UserTo userTo) {//написать метод
     }
 }

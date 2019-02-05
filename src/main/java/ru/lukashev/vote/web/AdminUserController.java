@@ -10,10 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.lukashev.vote.model.User;
 import ru.lukashev.vote.repository.JpaUserRepository;
+import ru.lukashev.vote.repository.UserRepository;
+import ru.lukashev.vote.to.UserTo;
+import ru.lukashev.vote.util.UserUtil;
 import ru.lukashev.vote.util.ValidationUtil;
 
 import java.net.URI;
 import java.util.List;
+
+import static ru.lukashev.vote.util.ValidationUtil.checkNew;
 
 
 @RestController
@@ -24,7 +29,7 @@ public class AdminUserController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private JpaUserRepository repository;
+    private UserRepository repository;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<User> getAll() {
@@ -34,13 +39,14 @@ public class AdminUserController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public User get(@PathVariable("id") int id) {
-
         log.info("get {}", id);
         return repository.get(id);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@RequestBody User user) {
+    public ResponseEntity<User> createWithLocation(@RequestBody UserTo userTo) {
+        User user = UserUtil.createNewFromTo(userTo);
+        checkNew(user);
         log.info("create {}", user);
         User created = repository.save(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -59,9 +65,10 @@ public class AdminUserController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody User user, @PathVariable("id") int id) {
-        log.info("update {} with id={}", user, id);
+    public void update(@RequestBody UserTo userTo, @PathVariable("id") int id) {
+        User user = UserUtil.updateFromTo(repository.get(userTo.getId()), userTo);
         ValidationUtil.assureIdConsistent(user, id);
+        log.info("update {} with id={}", user, id);
         repository.save(user);
     }
 
@@ -70,8 +77,4 @@ public class AdminUserController {
         log.info("getByEmail {}", email);
         return repository.getByEmail(email);
     }
-
-
-
-
 }
