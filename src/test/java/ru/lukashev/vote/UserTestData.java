@@ -1,11 +1,14 @@
 package ru.lukashev.vote;
 
+import org.springframework.test.web.servlet.ResultMatcher;
+import ru.lukashev.vote.json.JsonUtil;
 import ru.lukashev.vote.model.Roles;
 import ru.lukashev.vote.model.User;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static ru.lukashev.vote.model.AbstractNamedEntity.START_SEQ;
 
 public class UserTestData {
@@ -27,4 +30,21 @@ public class UserTestData {
     public static void assertMatch(Iterable<User> actual, Iterable<User> expected) {
         assertThat(actual).usingElementComparatorIgnoringFields("registered", "roles", "votes").isEqualTo(expected);
     }
+
+    public static ResultMatcher contentJson(User... expected) {
+        return content().json(JsonUtil.writeIgnoreProps(List.of(expected), "registered"));
+    }
+
+    public static ResultMatcher contentJson(User expected) {
+        return content().json(JsonUtil.writeIgnoreProps(expected, "registered"));
+    }
+
+    public static ResultMatcher getUserMatcher(User... expected) {
+        return result -> assertMatch(TestUtil.readListFromJsonMvcResult(result, User.class), List.of(expected));
+    }
+
+    public static ResultMatcher getUserMatcher(User expected) {
+        return result -> assertMatch(TestUtil.readFromJsonMvcResult(result, User.class), expected);
+    }
+
 }

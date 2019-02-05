@@ -1,10 +1,14 @@
 package ru.lukashev.vote;
 
+import org.springframework.test.web.servlet.ResultMatcher;
+import ru.lukashev.vote.json.JsonUtil;
 import ru.lukashev.vote.model.Restaurant;
+import ru.lukashev.vote.model.User;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static ru.lukashev.vote.model.AbstractNamedEntity.START_SEQ;
 
 public class RestaurantTestData {
@@ -33,5 +37,22 @@ public class RestaurantTestData {
     public static void assertMatch(Iterable<Restaurant> actual, Iterable<Restaurant> expected) {
         assertThat(actual).usingElementComparatorIgnoringFields("menu","votes").isEqualTo(expected);
     }
+
+    public static ResultMatcher contentJson(Restaurant... expected) {
+        return content().json(JsonUtil.writeIgnoreProps(List.of(expected), "votes"));
+    }
+
+    public static ResultMatcher contentJson(Restaurant expected) {
+        return content().json(JsonUtil.writeIgnoreProps(expected,  "votes"));
+    }
+
+    public static ResultMatcher getRestaurantMatcher(Restaurant... expected) {
+        return result -> assertMatch(TestUtil.readListFromJsonMvcResult(result, Restaurant.class), List.of(expected));
+    }
+
+    public static ResultMatcher getRestaurantMatcher(Restaurant expected) {
+        return result -> assertMatch(TestUtil.readFromJsonMvcResult(result, Restaurant.class), expected);
+    }
+
 
 }

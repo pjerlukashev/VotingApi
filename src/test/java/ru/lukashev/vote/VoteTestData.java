@@ -1,11 +1,13 @@
 package ru.lukashev.vote;
 
-import ru.lukashev.vote.model.Dish;
+import org.springframework.test.web.servlet.ResultMatcher;
+import ru.lukashev.vote.json.JsonUtil;
 import ru.lukashev.vote.model.Vote;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static ru.lukashev.vote.RestaurantTestData.RESTAURANT1;
 import static ru.lukashev.vote.RestaurantTestData.RESTAURANT2;
 import static ru.lukashev.vote.UserTestData.ADMIN;
@@ -29,5 +31,13 @@ public class VoteTestData {
 
     public static void assertMatch(Iterable<Vote> actual, Iterable<Vote> expected) {
         assertThat(actual).isEqualTo(expected);
+    }
+
+    public static ResultMatcher contentJson(Vote... expected) {
+        return content().json(JsonUtil.writeValue(List.of(expected)));
+    }
+
+    public static ResultMatcher contentJson(Vote expected) {
+        return content().json(JsonUtil.writeValue(expected));
     }
 }
