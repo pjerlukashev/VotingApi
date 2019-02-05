@@ -6,21 +6,15 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
-public class UserTo  implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-
-    private Integer id;
+public class UserTo  extends BaseTo {
 
     @NotBlank
     @Size(min = 2, max = 100)
-    @SafeHtml
     private String name;
 
     @Email
     @NotBlank
     @Size(max = 100)
-    @SafeHtml // https://stackoverflow.com/questions/17480809
     private String email;
 
     @Size(min = 5, max = 32)
@@ -67,8 +61,6 @@ public class UserTo  implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-
-
 
     @Override
     public String toString() {
