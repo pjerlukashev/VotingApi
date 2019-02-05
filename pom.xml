@@ -26,6 +26,7 @@
         <junit.jupiter.version>5.3.1</junit.jupiter.version>
         <hamcrest.version>1.3</hamcrest.version>
         <tomcat.version>9.0.12</tomcat.version>
+        <jackson-json.version>2.9.7</jackson-json.version>
     </properties>
 
     <build>
@@ -132,6 +133,11 @@
         <version>2.4.0-b180830.0438</version>
     </dependency>
 
+    <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+        <version>1.3.2</version>
+    </dependency>
     <!--http://hibernate.org/validator/documentation/getting-started/#unified-expression-language-el-->
     <dependency>
         <groupId>org.glassfish</groupId>
@@ -177,6 +183,23 @@
         <artifactId>tomcat-jdbc</artifactId>
         <version>${tomcat.version}</version>
         <scope>provided</scope>
+    </dependency>
+
+    <!--JSON-->
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson-json.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-hibernate5</artifactId>
+        <version>${jackson-json.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+        <version>${jackson-json.version}</version>
     </dependency>
 </dependencies>
 </project>
