@@ -14,6 +14,7 @@ import java.time.LocalDate;
         @NamedQuery(name = Vote.DELETE_ALL_ON_DATE, query = "DELETE FROM Vote v WHERE v.date=:date "),
         @NamedQuery(name = Vote.GET_VOTING_RESULTS, query = "SELECT v FROM Vote v WHERE v.date=:date "),
         @NamedQuery(name = Vote.GET, query = "SELECT v FROM Vote v WHERE v.date=:date AND v.user.id =: userId"),
+        @NamedQuery(name = Vote.ALL_FOR_USER, query = "SELECT v FROM Vote v LEFT JOIN FETCH v.restaurant WHERE v.user.id=:userId  ORDER BY v.date DESC"),
 })
 
 
@@ -27,18 +28,19 @@ public class Vote extends AbstractBaseEntity {
     public static final String DELETE_ALL_ON_DATE= "Vote.deleteAllOnDate";
     public static final String GET_VOTING_RESULTS= "Vote.getVotingResults";
     public static final String GET= "Vote.get";
+    public static final String ALL_FOR_USER= "Vote.getAllForUser";
 
     @Column(name = "date", nullable = false)
     @NotNull
     @DateTimeFormat(pattern = DateTimeUtil.DATE_TIME_PATTERN)
     private LocalDate date;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @NotNull
     private User user;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
     @NotNull
     private Restaurant restaurant;

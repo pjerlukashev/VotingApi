@@ -1,5 +1,7 @@
 package ru.lukashev.vote.model;
 
+import org.hibernate.annotations.BatchSize;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -16,6 +18,7 @@ public class Restaurant extends AbstractNamedEntity {
     public static final String ALL_SORTED = "Restaurant.getAllSorted";
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "restaurant")
+    @BatchSize(size = 200)
     private List<Dish> menu;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")

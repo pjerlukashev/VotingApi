@@ -1,5 +1,6 @@
 package ru.lukashev.vote.model;
 
+import org.hibernate.annotations.BatchSize;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
@@ -46,6 +47,7 @@ public class User extends AbstractNamedEntity  {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
+    @BatchSize(size = 200)
     private Set<Roles> roles;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
