@@ -16,5 +16,7 @@ public interface VoteRepository {
 
     void deleteAllOnDate(LocalDate date);
 
+    List<Vote> getUserVotesLog(int userId);
+
     Vote save(Vote vote, int userId);
 }

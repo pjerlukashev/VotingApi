@@ -8,6 +8,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import ru.lukashev.vote.RestaurantTestData;
 import ru.lukashev.vote.TimingExtension;
 import ru.lukashev.vote.VoteTestData;
 import ru.lukashev.vote.model.Vote;
@@ -113,4 +114,10 @@ public class VoteRepositoryTest {
         repository.getAllForRestaurant(RESTAURANT1_ID);
         VoteTestData.assertMatch(repository.getAll(), List.of(VOTE1));
     }*/
+
+    @Test
+    void getLog() throws Exception{
+        VoteTestData.assertMatch(repository.getUserVotesLog(USER_ID), List.of(VOTE1) );
+        RestaurantTestData.assertMatch(repository.getUserVotesLog(USER_ID).get(0).getRestaurant(), RESTAURANT1);
+    }
 }

@@ -61,6 +61,12 @@ public class JpaVoteRepository implements VoteRepository  {
     }
 
     @Override
+    public  List<Vote> getUserVotesLog(int userId) {
+       return  em.createNamedQuery(Vote.ALL_FOR_USER, Vote.class).setParameter("userId", userId).getResultList();
+    }
+
+
+    @Override
     @Transactional
     public Vote save(Vote vote, int userId) {
         Assert.notNull(vote, "vote must not be null");
