@@ -35,7 +35,7 @@ public class UserActionController {
     @Autowired
     UserRepository userRepository;
 
-    @GetMapping(value="/restaurants}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value="/restaurants", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Restaurant> getAllRestaurants(){
         log.info("get all restaurants");
       return  restaurantRepository.getAll();
@@ -51,7 +51,7 @@ public class UserActionController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity<String> vote(@PathVariable("restaurantId") int restaurantId){
         LocalTime now = LocalTime.now();
-        if (now.isAfter(LocalTime.of(11,00))){
+        if (now.isAfter(LocalTime.of(11,0))){
          return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
         int authUserId = SecurityUtil.authUserId();

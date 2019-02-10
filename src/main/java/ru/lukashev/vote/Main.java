@@ -2,11 +2,7 @@ package ru.lukashev.vote;
 
 import org.slf4j.LoggerFactory;
 import ru.lukashev.vote.model.Restaurant;
-import ru.lukashev.vote.model.User;
-import ru.lukashev.vote.util.VoteUtil;
 import org.slf4j.Logger;
-
-import java.util.List;
 
 public class Main {
 
