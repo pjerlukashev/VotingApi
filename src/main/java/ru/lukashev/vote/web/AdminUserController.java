@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.lukashev.vote.model.User;
-import ru.lukashev.vote.repository.JpaUserRepository;
 import ru.lukashev.vote.repository.UserRepository;
 import ru.lukashev.vote.to.UserTo;
 import ru.lukashev.vote.util.UserUtil;
@@ -76,5 +75,14 @@ public class AdminUserController {
     public User getByMail(@RequestParam("email") String email) {
         log.info("getByEmail {}", email);
         return repository.getByEmail(email);
+    }
+
+    @PutMapping(value = "/{id}/enabled")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void setEnabled( @PathVariable("id") int id, @RequestParam("enabled") boolean enabled) {
+        log.info(enabled ? "enable {}" : "disable {}", id);
+        User user = repository.get(id);
+        user.setEnabled(enabled);
+        repository.save(user);
     }
 }

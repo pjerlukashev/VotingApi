@@ -1,6 +1,7 @@
 package ru.lukashev.vote.controller;
 
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -8,14 +9,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import ru.lukashev.vote.TestUtil;
 import ru.lukashev.vote.UserTestData;
 import ru.lukashev.vote.json.JsonUtil;
-import ru.lukashev.vote.model.Roles;
 import ru.lukashev.vote.model.User;
 import ru.lukashev.vote.repository.UserRepository;
 import ru.lukashev.vote.to.UserTo;
 import ru.lukashev.vote.util.UserUtil;
-import ru.lukashev.vote.web.AdminUserController;
-
-import java.util.Collections;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -42,7 +39,7 @@ public class AdminUserControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetByEmail() throws Exception {
-        mockMvc.perform(get(REST_URL + "by?email=" + USER.getEmail()))
+        mockMvc.perform(get(REST_URL + "/by?email=" + USER.getEmail()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(contentJson(USER));
@@ -90,4 +87,14 @@ public class AdminUserControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
              .andExpect(contentJson(ADMIN, USER));
     }
+
+    @Test
+    void testSetEnabled() throws Exception{
+        mockMvc.perform(put(REST_URL + "/"  +USER_ID + "/enabled?enabled=false"))
+                .andExpect(status().isNoContent());
+
+        Assertions.assertTrue(!repository.get(USER_ID).isEnabled());
+    }
 }
+
+
