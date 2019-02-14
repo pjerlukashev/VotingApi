@@ -1,9 +1,11 @@
 package ru.lukashev.vote.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
+import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,7 +17,7 @@ import java.time.LocalDate;
         @NamedQuery(name = Dish.DELETE, query = "DELETE FROM Dish m WHERE m.id=:id AND m.restaurant.id=:restaurantId"),
         @NamedQuery(name = Dish.GET_ENABLED, query = "SELECT m FROM Dish m WHERE m.restaurant.id=:restaurantId AND m.enabled =: enabled ORDER BY m.name ASC"),
 })
-
+@Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Entity
 @Table(name = "dishes", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "restaurant_id"}, name = "dish_restaurant_unique_name_idx")})
 public class Dish extends AbstractNamedEntity {

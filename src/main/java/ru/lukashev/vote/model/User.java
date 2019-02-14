@@ -1,7 +1,9 @@
 package ru.lukashev.vote.model;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.util.CollectionUtils;
+import org.hibernate.annotations.Cache;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -19,6 +21,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = "email", name = "users_unique_email_idx")})
+@Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class User extends AbstractNamedEntity  {
 
     public static final String DELETE = "User.delete";
@@ -48,6 +51,7 @@ public class User extends AbstractNamedEntity  {
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
     @BatchSize(size = 200)
+    @Cache(usage= CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Roles> roles;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")

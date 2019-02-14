@@ -27,6 +27,7 @@
         <hamcrest.version>1.3</hamcrest.version>
         <tomcat.version>9.0.12</tomcat.version>
         <jackson-json.version>2.9.7</jackson-json.version>
+        <ehcache.version>3.6.1</ehcache.version>
     </properties>
 
     <build>
@@ -103,6 +104,10 @@
         </exclusions>
 
     </dependency>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+    </dependency>
 
     <dependency>
         <groupId>org.springframework</groupId>
@@ -126,6 +131,25 @@
         <artifactId>hibernate-validator</artifactId>
         <version>${hibernate-validator.version}</version>
     </dependency>
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-jcache</artifactId>
+        <version>${hibernate.version}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>org.ehcache</groupId>
+        <artifactId>ehcache</artifactId>
+        <scope>runtime</scope>
+        <version>${ehcache.version}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>javax.cache</groupId>
+        <artifactId>cache-api</artifactId>
+        <version>1.1.0</version>
+    </dependency>
+
 
     <dependency>
         <groupId>org.glassfish.jaxb</groupId>
