@@ -1,8 +1,6 @@
 package ru.lukashev.vote.model;
 
-
 import org.hibernate.Hibernate;
-
 import javax.persistence.*;
 
 @MappedSuperclass

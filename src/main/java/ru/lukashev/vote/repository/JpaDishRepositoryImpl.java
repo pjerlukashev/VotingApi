@@ -6,6 +6,7 @@ import org.springframework.util.Assert;
 import ru.lukashev.vote.model.Dish;
 import ru.lukashev.vote.model.Restaurant;
 import ru.lukashev.vote.util.ValidationUtil;
+import ru.lukashev.vote.util.exception.NotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,8 +23,13 @@ public class JpaDishRepositoryImpl implements DishRepository {
     @Transactional
     public Dish save(Dish dish, int restaurantId) {
         Assert.notNull(dish, "dish must not be null");
+        Dish stored;
         Dish result;
-        if(!dish.isNew() && get(dish.getId(), restaurantId)==null){ ValidationUtil.checkNotFoundWithId(null, dish.getId()); }
+        if(!dish.isNew()) {  try {
+            stored = get(dish.getId(),restaurantId);
+        }catch (NotFoundException e){stored = null; }
+        if(stored==null)
+        { ValidationUtil.checkNotFoundWithId(null, dish.getId()); }}
         dish.setRestaurant(em.getReference(Restaurant.class, restaurantId));
         if (dish.isNew()){
             em.persist(dish);

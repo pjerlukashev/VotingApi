@@ -29,20 +29,10 @@ public class JpaVoteRepository implements VoteRepository  {
         return ValidationUtil.checkNotFound(DataAccessUtils.singleResult(votes), "userId=" +userId + "date=" + date );
     }
 
-    /*@Override
-    public List<Vote> getAllForRestaurant(int restaurantId) {
-        return em.createNamedQuery(Vote.ALL_FOR_RESTAURANT, Vote.class).setParameter( "restaurantId", restaurantId ).getResultList();
-    }*/
-
     @Override
     public List<Vote> getAll() {
         return em.createNamedQuery(Vote.ALL_SORTED, Vote.class).getResultList();
     }
-
-   /* @Override
-    public List<Vote> getVotingResults(LocalDate date) {
-        return em.createNamedQuery(Vote.GET_VOTING_RESULTS, Vote.class).setParameter("date", date).getResultList();
-    }*/
 
     @Override
     @Transactional
@@ -55,8 +45,9 @@ public class JpaVoteRepository implements VoteRepository  {
     @Override
     @Transactional
     public void deleteAllOnDate(LocalDate date) {
+        Assert.notNull(date, "date must not be null");
       if (em.createNamedQuery(Vote.DELETE_ALL_ON_DATE).setParameter("date", date).executeUpdate()==0) {
-          throw new NotFoundException("Not entities found with date=" + date);
+          throw new NotFoundException("No entities found with date=" + date);
       }
     }
 
@@ -64,7 +55,6 @@ public class JpaVoteRepository implements VoteRepository  {
     public  List<Vote> getUserVotesLog(int userId) {
        return  em.createNamedQuery(Vote.ALL_FOR_USER, Vote.class).setParameter("userId", userId).getResultList();
     }
-
 
     @Override
     @Transactional

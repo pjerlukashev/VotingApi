@@ -4,7 +4,6 @@ import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.util.CollectionUtils;
 import org.hibernate.annotations.Cache;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -57,14 +56,6 @@ public class User extends AbstractNamedEntity  {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<Vote> votes;
 
-    public List<Vote> getVotes() {
-        return votes;
-    }
-
-    public void setVotes(List<Vote> votes) {
-        this.votes = votes;
-    }
-
     public User(){}
 
     public User(User u) {
@@ -83,7 +74,6 @@ public class User extends AbstractNamedEntity  {
         this.registered = registered;
         setRoles(roles);
     }
-
 
     public String getEmail() {
         return email;
@@ -123,6 +113,14 @@ public class User extends AbstractNamedEntity  {
 
     public void setRoles(Collection<Roles> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Roles.class) : EnumSet.copyOf(roles);
+    }
+
+    public List<Vote> getVotes() {
+        return new ArrayList<>(this.votes);
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = new ArrayList<>(votes);
     }
 
     @Override

@@ -2,8 +2,9 @@ package ru.lukashev.vote.model;
 
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.hibernate.annotations.Cache;
 
@@ -28,15 +29,6 @@ public class Restaurant extends AbstractNamedEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant")
     private List<Vote> votes;
 
-
-    public List<Dish> getMenu() {
-        return menu;
-    }
-
-    public void setMenu(List<Dish> menu) {
-        this.menu = menu;
-    }
-
     public Restaurant(Integer id, String name, List<Dish> menu) {
         super(id, name);
         this.menu = menu;
@@ -46,6 +38,14 @@ public class Restaurant extends AbstractNamedEntity {
 
     public Restaurant(Integer id, String name){
         super(id, name);
+    }
+
+    public List<Dish> getMenu() {
+        return new ArrayList<>(this.menu);
+    }
+
+    public void setMenu(List<Dish> menu) {
+        this.menu = new ArrayList<>(menu);
     }
 
     @Override

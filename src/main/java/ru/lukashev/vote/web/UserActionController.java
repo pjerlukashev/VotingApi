@@ -50,12 +50,12 @@ public class UserActionController {
     @PutMapping (value="/votes/{restaurantId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity<String> vote(@PathVariable("restaurantId") int restaurantId){
+        int authUserId = SecurityUtil.authUserId();
+        log.info("user {} vote is {}", authUserId, restaurantId);
         LocalTime now = LocalTime.now();
         if (now.isAfter(LocalTime.of(11,0))){
          return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        int authUserId = SecurityUtil.authUserId();
-        log.info("user {} vote is {}", authUserId, restaurantId);
         Vote stored = voteRepository.get(authUserId, LocalDate.now());
         if(stored == null ) {
             voteRepository.save(new Vote(userRepository.get(authUserId), restaurantRepository.get(restaurantId)), authUserId);
@@ -75,7 +75,7 @@ public class UserActionController {
 
     @GetMapping(value="/log/{restaurantId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public   Map<LocalDate, Integer> getVoteLogOnRestaurant(@PathVariable ("restaurantId") int id) {
-        log.info("get vote log for user {}", id);
+        log.info("get vote log for restaurant {}", id);
         List<Vote> votes = voteRepository.getAll();
         return votes.stream().filter(vote-> vote.getRestaurant().getId().equals(id)).collect(Collectors.groupingBy(Vote::getDate, Collectors.summingInt(vote->1)));
     }

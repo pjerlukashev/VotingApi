@@ -1,10 +1,10 @@
 package ru.lukashev.vote.to;
 
-public abstract class BaseTo  {
+public abstract class BaseTo {
 
-protected  Integer id;
+    protected Integer id;
 
-public BaseTo(){}
+    public BaseTo() {}
 
     public BaseTo(Integer id) {
         this.id = id;

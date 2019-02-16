@@ -6,7 +6,6 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.validator.constraints.Range;
 import org.hibernate.annotations.Cache;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
@@ -47,8 +46,21 @@ public class Dish extends AbstractNamedEntity {
 
    public Dish(){}
 
-    public LocalDate getDate() {
-        return date;
+    public Dish(Integer id, String name, Integer price) {
+        super(id, name);
+        this.price = price;
+        this.enabled = true;
+        this.date= LocalDate.now();
+    }
+
+    public Dish(Integer id, String name, Integer price, boolean enabled) {
+        super(id, name);
+        this.price = price;
+        this.enabled = enabled;
+    }
+
+    public Dish(String name, Integer price) {
+        this(null, name, price);
     }
 
     public Integer getPrice() {
@@ -79,20 +91,8 @@ public class Dish extends AbstractNamedEntity {
         this.date = date;
     }
 
-    public Dish(Integer id, String name, Integer price) {
-        super(id, name);
-        this.price = price;
-        this.enabled = true;
-        this.date= LocalDate.now();
-   }
-
-    public Dish(Integer id, String name, Integer price, boolean enabled) {
-        super(id, name);
-        this.price = price;
-        this.enabled = enabled;
-    }
-    public Dish(String name, Integer price) {
-        this(null, name, price);
+    public LocalDate getDate() {
+        return date;
     }
 
 }

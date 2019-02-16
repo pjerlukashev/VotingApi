@@ -11,7 +11,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.lukashev.vote.model.Dish;
 import ru.lukashev.vote.model.Restaurant;
 import ru.lukashev.vote.repository.DishRepository;
-import ru.lukashev.vote.repository.JpaRestaurantRepository;
 import ru.lukashev.vote.repository.RestaurantRepository;
 import ru.lukashev.vote.to.DishTo;
 import ru.lukashev.vote.to.RestaurantTo;
@@ -51,9 +50,9 @@ public class AdminRestaurantController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Restaurant> createRestaurantWithLocation(@RequestBody RestaurantTo restaurantTo) {
+        log.info("create restaurant {}", restaurantTo);
         Restaurant restaurant = RestaurantUtil.createNewFromTo(restaurantTo);
         ValidationUtil.checkNew(restaurant);
-        log.info("create restaurant {}", restaurant);
         Restaurant created = restaurantRepository.save(restaurant);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -69,19 +68,9 @@ public class AdminRestaurantController {
         restaurantRepository.delete(id);
     }
 
-   /* @PutMapping(value = "/{restaurantId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateRestaurant(@RequestBody Restaurant restaurant, @PathVariable("restaurantId") int id) {
-        ValidationUtil.assureIdConsistent(restaurant, id);
-        log.info("update restaurant {} with id={}", restaurant, id);
-        ValidationUtil.assureIdConsistent(restaurant, id);
-        restaurantRepository.save(restaurant);
-    }*/
-
-
     @GetMapping(value = "/{restaurantId}/dishes", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Dish> getAllDishesOfTheRestaurant(@PathVariable ("restaurantId") int id) {
-        log.info("get all dishes of the restaurant");
+        log.info("get all dishes of the restaurant {}" , id);
         return dishRepository.getAll(id);
     }
 
@@ -94,9 +83,9 @@ public class AdminRestaurantController {
 
     @PostMapping(value = "{restaurantId}/dishes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Dish> createDishOfTheRestaurantWithLocation(@RequestBody DishTo dishTo, @PathVariable ("restaurantId") int id) {
+        log.info("create dish {} of the restaurant with id{}", dishTo);
         Dish dish = DishUtil.createNewFromTo(dishTo);
         ValidationUtil.checkNew(dish);
-        log.info("create dish {} of the restaurant with id{}", dish);
         Dish created = dishRepository.save(dish, id);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -115,9 +104,9 @@ public class AdminRestaurantController {
     @PutMapping(value = "/{restaurantId}/dishes/{dishId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void updateDishOfTheRestaurant(@RequestBody DishTo dishTo, @PathVariable("restaurantId") int restaurantId, @PathVariable("dishId") int dishId ) {
+        log.info("update dish {} of the restaurant with id={}", dishTo, restaurantId);
         Dish dish = DishUtil.updateFromTo(dishRepository.get(dishTo.getId(),restaurantId), dishTo);
         ValidationUtil.assureIdConsistent(dish, dishId);
-        log.info("update dish {} of the restaurant with id={}", dish, restaurantId);
         dishRepository.save(dish, restaurantId);
     }
 

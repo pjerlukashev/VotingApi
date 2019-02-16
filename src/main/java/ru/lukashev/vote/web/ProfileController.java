@@ -30,22 +30,22 @@ public class ProfileController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public User get() {
-        log.info("getting authorized user");
+        log.info("getting authorized user {}", SecurityUtil.authUserId());
         return repository.get(SecurityUtil.authUserId());
     }
 
     @DeleteMapping
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete() {
+        log.info("deleting authorized user {}", SecurityUtil.authUserId());
         repository.delete(SecurityUtil.authUserId());
     }
-
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<User> register(@RequestBody UserTo userTo) {
+        log.info("create user {}", userTo);
         User user = UserUtil.createNewFromTo(userTo);
-        log.info("create {}", user);
         checkNew(user);
         User created = repository.save(user);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -58,7 +58,7 @@ public class ProfileController {
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void update(@RequestBody UserTo userTo) {
-        log.info("update {} with id={}", userTo, SecurityUtil.authUserId());
+        log.info("update user {} with id={}", userTo, SecurityUtil.authUserId());
         User user = updateFromTo(repository.get(userTo.getId()), userTo);
         ValidationUtil.assureIdConsistent(user, SecurityUtil.authUserId());
         repository.save(user);

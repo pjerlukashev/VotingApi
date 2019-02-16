@@ -1,10 +1,9 @@
 package ru.lukashev.vote.to;
 
-import org.hibernate.validator.constraints.SafeHtml;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
+
 
 public class UserTo  extends BaseTo {
 
@@ -28,14 +27,6 @@ public class UserTo  extends BaseTo {
         this.name = name;
         this.email = email;
         this.password = password;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getPassword() {

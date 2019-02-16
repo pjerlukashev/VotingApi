@@ -2,7 +2,6 @@ package ru.lukashev.vote.util;
 
 import ru.lukashev.vote.model.Dish;
 import ru.lukashev.vote.to.DishTo;
-
 import java.time.LocalDate;
 
 public class DishUtil {

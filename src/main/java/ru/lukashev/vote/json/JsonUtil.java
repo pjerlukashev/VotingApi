@@ -3,7 +3,6 @@ package ru.lukashev.vote.json;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectReader;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
