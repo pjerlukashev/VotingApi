@@ -5,7 +5,6 @@ import ru.lukashev.vote.json.JsonUtil;
 import ru.lukashev.vote.model.Roles;
 import ru.lukashev.vote.model.User;
 import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

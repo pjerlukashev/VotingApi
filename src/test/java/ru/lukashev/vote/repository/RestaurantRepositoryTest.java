@@ -1,11 +1,11 @@
 package ru.lukashev.vote.repository;
 
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -14,10 +14,8 @@ import ru.lukashev.vote.TimingExtension;
 import ru.lukashev.vote.model.Restaurant;
 import ru.lukashev.vote.util.exception.NotFoundException;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.lukashev.vote.RestaurantTestData.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+
 
 @SpringJUnitConfig(locations = {
         "classpath:spring/spring-db.xml"
@@ -26,9 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @ExtendWith(TimingExtension.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class RestaurantRepositoryTest {
-
-    @Autowired
-    private Environment env;
 
     @Autowired
     private RestaurantRepository repository;
@@ -46,7 +41,7 @@ public class RestaurantRepositoryTest {
 
     @Test
     void deleteNotFound() throws Exception {
-        assertThrows(NotFoundException.class, ()-> repository.delete(20));
+        Assertions.assertThrows(NotFoundException.class, ()-> repository.delete(20));
     }
 
     @Test
@@ -64,7 +59,7 @@ public class RestaurantRepositoryTest {
 
     @Test
     void getNotFound() throws Exception {
-        assertThrows(NotFoundException.class, ()->repository.get(20));
+        Assertions.assertThrows(NotFoundException.class, ()->repository.get(20));
     }
 
     @Test

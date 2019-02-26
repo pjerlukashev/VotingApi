@@ -1,10 +1,10 @@
 package ru.lukashev.vote.repository;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
@@ -13,11 +13,9 @@ import ru.lukashev.vote.TimingExtension;
 import ru.lukashev.vote.model.Roles;
 import ru.lukashev.vote.model.User;
 import ru.lukashev.vote.util.exception.NotFoundException;
-
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static ru.lukashev.vote.UserTestData.*;
 
 @SpringJUnitConfig(locations = {
@@ -27,9 +25,6 @@ import static ru.lukashev.vote.UserTestData.*;
 @ExtendWith(TimingExtension.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class UserRepositoryTest {
-
-    @Autowired
-    private Environment env;
 
     @Autowired
     private UserRepository repository;
@@ -84,17 +79,17 @@ public class UserRepositoryTest {
 
    @Test
     void createDuplicatedByEmail()  throws Exception{
-       assertThrows(DataAccessException.class, () ->
+       Assertions.assertThrows(DataAccessException.class, () ->
                repository.save(new User(null, "Duplicate", "user@yandex.ru", "newPass", Roles.ROLE_USER)));
     }
 
    @Test
     void deleteNotFound() throws Exception{
-     assertThrows(NotFoundException.class, ()->repository.delete(10));
+       Assertions.assertThrows(NotFoundException.class, ()->repository.delete(10));
     }
 
     @Test
     void getNotFound()throws Exception{
-        assertThrows(NotFoundException.class, ()-> repository.get(10));
+        Assertions.assertThrows(NotFoundException.class, ()-> repository.get(10));
     }
 }

@@ -1,13 +1,11 @@
 package ru.lukashev.vote;
 
+import org.assertj.core.api.Assertions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import ru.lukashev.vote.json.JsonUtil;
 import ru.lukashev.vote.model.Dish;
-import ru.lukashev.vote.model.Restaurant;
-
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static ru.lukashev.vote.model.AbstractNamedEntity.START_SEQ;
 
@@ -33,7 +31,7 @@ public class DishTestData {
   public static List<Dish> getDishes(){return List.of(DISH1, DISH2,DISH3, DISH4,DISH5,DISH6,DISH7,DISH8,DISH9,DISH10,DISH11);}
 
   public static void assertMatch(Dish actual, Dish expected) {
-        assertThat(actual).isEqualTo(expected);
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 
     public static void assertMatch(Iterable<Dish> actual, Dish... expected) {
@@ -41,7 +39,7 @@ public class DishTestData {
     }
 
     public static void assertMatch(Iterable<Dish> actual, Iterable<Dish> expected) {
-        assertThat(actual).isEqualTo(expected);
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 
 

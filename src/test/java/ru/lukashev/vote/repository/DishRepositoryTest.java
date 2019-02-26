@@ -1,10 +1,10 @@
 package ru.lukashev.vote.repository;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -17,7 +17,7 @@ import java.util.List;
 
 import static ru.lukashev.vote.DishTestData.*;
 import static ru.lukashev.vote.RestaurantTestData.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 
 @SpringJUnitConfig(locations = {
@@ -27,9 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(TimingExtension.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class DishRepositoryTest {
-
-    @Autowired
-    private Environment env;
 
     @Autowired
     private DishRepository repository;
@@ -47,7 +44,7 @@ public class DishRepositoryTest {
 
     @Test
     void deleteNotFound() throws Exception {
-        assertThrows(NotFoundException.class, ()->repository.delete(DISH1_ID, 1));
+        Assertions.assertThrows(NotFoundException.class, ()->repository.delete(DISH1_ID, 1));
     }
 
     @Test
@@ -65,7 +62,7 @@ public class DishRepositoryTest {
 
     @Test
     void getNotFound() throws Exception {
-     assertThrows(NotFoundException.class, () -> repository.get(DISH1_ID, 100003));
+     Assertions.assertThrows(NotFoundException.class, () -> repository.get(DISH1_ID, 100003));
     }
 
     @Test
