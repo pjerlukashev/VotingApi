@@ -1,19 +1,24 @@
 package ru.lukashev.vote.repository;
 
 import org.springframework.dao.support.DataAccessUtils;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import ru.lukashev.vote.model.User;
 import ru.lukashev.vote.util.ValidationUtil;
+import ru.lukashev.vote.util.exception.NotFoundException;
+import ru.lukashev.vote.web.LoggedUser;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository
+@Repository("userRepository")
 @Transactional(readOnly = true)
-public class JpaUserRepository implements UserRepository {
+public class JpaUserRepository implements UserRepository , UserDetailsService {
 
     @PersistenceContext
     private EntityManager em;
@@ -57,5 +62,12 @@ public class JpaUserRepository implements UserRepository {
                 .setParameter(1, email)
                 .getResultList();
         return ValidationUtil.checkNotFound(DataAccessUtils.singleResult(users), "email=" + email);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User u;
+        try{u = getByEmail(email);}catch(NotFoundException e){throw new UsernameNotFoundException("User" + email + "is not found");}
+        return new LoggedUser(u);
     }
 }

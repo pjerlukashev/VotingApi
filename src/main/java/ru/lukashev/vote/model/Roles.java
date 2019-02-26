@@ -1,6 +1,14 @@
 package ru.lukashev.vote.model;
 
-public enum Roles {
+import org.springframework.security.core.GrantedAuthority;
 
-    ROLE_USER, ROLE_ADMIN
+public enum Roles implements GrantedAuthority {
+
+    ROLE_USER, ROLE_ADMIN;
+
+
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }

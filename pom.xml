@@ -28,6 +28,7 @@
         <tomcat.version>9.0.12</tomcat.version>
         <jackson-json.version>2.9.7</jackson-json.version>
         <ehcache.version>3.6.1</ehcache.version>
+        <spring.security.version>5.1.1.RELEASE</spring.security.version>
     </properties>
 
     <build>
@@ -119,6 +120,22 @@
                 <artifactId>ocommons-logging</artifactId>
             </exclusion>
         </exclusions>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${spring.security.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring.security.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-test</artifactId>
+        <version>${spring.version}</version>
     </dependency>
 
     <dependency>
