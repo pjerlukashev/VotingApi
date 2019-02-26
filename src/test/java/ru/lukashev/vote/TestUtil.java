@@ -1,9 +1,11 @@
 package ru.lukashev.vote;
 
-
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import ru.lukashev.vote.json.JsonUtil;
+import ru.lukashev.vote.model.User;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -29,5 +31,9 @@ public class TestUtil {
 
     public static <T> List<T> readListFromJsonMvcResult(MvcResult result, Class<T> clazz) throws UnsupportedEncodingException {
         return JsonUtil.readValues(getContent(result), clazz);
+    }
+
+    public static RequestPostProcessor userHttpBasic(User user) {
+        return SecurityMockMvcRequestPostProcessors.httpBasic(user.getEmail(), user.getPassword());
     }
 }

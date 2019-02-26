@@ -19,6 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.lukashev.vote.TestUtil.userHttpBasic;
 import static ru.lukashev.vote.UserTestData.*;
 
 public class AdminUserControllerTest extends AbstractControllerTest {
@@ -30,7 +31,7 @@ public class AdminUserControllerTest extends AbstractControllerTest {
 
     @Test
     void testGet() throws Exception {
-        mockMvc.perform(get(REST_URL + ADMIN_ID))
+        mockMvc.perform(get(REST_URL + ADMIN_ID).with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -39,7 +40,7 @@ public class AdminUserControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetByEmail() throws Exception {
-        mockMvc.perform(get(REST_URL + "/by?email=" + USER.getEmail()))
+        mockMvc.perform(get(REST_URL + "/by?email=" + USER.getEmail()).with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(contentJson(USER));
@@ -47,7 +48,7 @@ public class AdminUserControllerTest extends AbstractControllerTest {
 
     @Test
     void testDelete() throws Exception {
-        mockMvc.perform(delete(REST_URL + USER_ID))
+        mockMvc.perform(delete(REST_URL + USER_ID).with(userHttpBasic(ADMIN)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertMatch(repository.getAll(), ADMIN);
@@ -56,7 +57,7 @@ public class AdminUserControllerTest extends AbstractControllerTest {
     @Test
     void testUpdate() throws Exception {
         UserTo updatedTo = new UserTo(100000, "newName", "newemail@ya.ru", "newPassword");
-        mockMvc.perform(put(REST_URL + USER_ID)
+        mockMvc.perform(put(REST_URL + USER_ID).with(userHttpBasic(ADMIN))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updatedTo)))
                 .andExpect(status().isNoContent());
@@ -67,7 +68,7 @@ public class AdminUserControllerTest extends AbstractControllerTest {
     @Test
     void testCreate() throws Exception {
         UserTo createdTo = new UserTo(null, "newName", "newemail@ya.ru", "newPassword");
-        ResultActions action = mockMvc.perform(post(REST_URL)
+        ResultActions action = mockMvc.perform(post(REST_URL).with(userHttpBasic(ADMIN))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(createdTo)))
                 .andExpect(status().isCreated());
@@ -82,7 +83,7 @@ public class AdminUserControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetAll() throws Exception {
-     mockMvc.perform(get(REST_URL))
+     mockMvc.perform(get(REST_URL).with(userHttpBasic(ADMIN)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
              .andExpect(contentJson(ADMIN, USER));
@@ -90,7 +91,7 @@ public class AdminUserControllerTest extends AbstractControllerTest {
 
     @Test
     void testSetEnabled() throws Exception{
-        mockMvc.perform(put(REST_URL + "/"  +USER_ID + "/enabled?enabled=false"))
+        mockMvc.perform(put(REST_URL + "/"  +USER_ID + "/enabled?enabled=false").with(userHttpBasic(ADMIN)))
                 .andExpect(status().isNoContent());
 
         Assertions.assertTrue(!repository.get(USER_ID).isEnabled());
