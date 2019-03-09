@@ -6,10 +6,12 @@
 
     <http pattern="/resources/**" security="none"/>
     <http pattern="/webjars/**" security="none"/>
+    <http pattern="/rest/profile/register" security="none"/>
 
     <http pattern="/rest/**" use-expressions="true" name="restSecurityFilterChain" create-session="stateless">
         <http-basic/>
         <intercept-url pattern="/rest/admin/**" access="hasRole('ROLE_ADMIN')"/>
+       <!-- <intercept-url pattern="/rest/profile/register" access="isAnonymous()"/>-->
         <intercept-url pattern="/**" access="isAuthenticated()"/>
         <csrf disabled="true"/>
     </http>
@@ -22,7 +24,7 @@
         <intercept-url pattern="/**/admin/**" access="hasRole('ROLE_ADMIN')"/>
         <intercept-url pattern="/**" access="isAuthenticated()"/>
 
-        <form-login login-page="/login" default-target-url="/meals"
+        <form-login login-page="/login" default-target-url="/rest/user/restaurants"
                     authentication-failure-url="/login?error=true"
                     login-processing-url="/spring_security_check"/>
         <logout logout-success-url="/login"/>
