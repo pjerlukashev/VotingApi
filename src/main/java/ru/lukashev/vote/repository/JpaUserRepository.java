@@ -1,5 +1,6 @@
 package ru.lukashev.vote.repository;
 
+import org.hibernate.jpa.QueryHints;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -60,6 +61,7 @@ public class JpaUserRepository implements UserRepository , UserDetailsService {
         Assert.notNull(email, "email must not be null");
         List<User> users = em.createNamedQuery(User.BY_EMAIL, User.class)
                 .setParameter(1, email)
+                .setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false)
                 .getResultList();
         return ValidationUtil.checkNotFound(DataAccessUtils.singleResult(users), "email=" + email);
     }
