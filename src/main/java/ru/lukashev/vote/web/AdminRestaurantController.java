@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.lukashev.vote.model.Dish;
@@ -17,6 +18,8 @@ import ru.lukashev.vote.to.RestaurantTo;
 import ru.lukashev.vote.util.DishUtil;
 import ru.lukashev.vote.util.RestaurantUtil;
 import ru.lukashev.vote.util.ValidationUtil;
+
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +52,11 @@ public class AdminRestaurantController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> createRestaurantWithLocation(@RequestBody RestaurantTo restaurantTo) {
+    public ResponseEntity<Object> createRestaurantWithLocation(@RequestBody @Valid RestaurantTo restaurantTo, BindingResult result) {
         log.info("create restaurant {}", restaurantTo);
+        if (result.hasErrors()) {
+            return ValidationUtil.getResponseEntityWithErrorMessage(result);
+        }
         Restaurant restaurant = RestaurantUtil.createNewFromTo(restaurantTo);
         ValidationUtil.checkNew(restaurant);
         Restaurant created = restaurantRepository.save(restaurant);
@@ -82,8 +88,11 @@ public class AdminRestaurantController {
 
 
     @PostMapping(value = "{restaurantId}/dishes", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Dish> createDishOfTheRestaurantWithLocation(@RequestBody DishTo dishTo, @PathVariable ("restaurantId") int id) {
+    public ResponseEntity<Object> createDishOfTheRestaurantWithLocation(@RequestBody @Valid DishTo dishTo, @PathVariable ("restaurantId") int id, BindingResult result ) {
         log.info("create dish {} of the restaurant with id{}", dishTo);
+        if (result.hasErrors()) {
+            return ValidationUtil.getResponseEntityWithErrorMessage(result);
+        }
         Dish dish = DishUtil.createNewFromTo(dishTo);
         ValidationUtil.checkNew(dish);
         Dish created = dishRepository.save(dish, id);
@@ -103,11 +112,15 @@ public class AdminRestaurantController {
 
     @PutMapping(value = "/{restaurantId}/dishes/{dishId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void updateDishOfTheRestaurant(@RequestBody DishTo dishTo, @PathVariable("restaurantId") int restaurantId, @PathVariable("dishId") int dishId ) {
+    public ResponseEntity<Object> updateDishOfTheRestaurant(@RequestBody @Valid DishTo dishTo, @PathVariable("restaurantId") int restaurantId, @PathVariable("dishId") int dishId, BindingResult result  ) {
         log.info("update dish {} of the restaurant with id={}", dishTo, restaurantId);
+        if (result.hasErrors()) {
+            return ValidationUtil.getResponseEntityWithErrorMessage(result);
+        }
         Dish dish = DishUtil.updateFromTo(dishRepository.get(dishTo.getId(),restaurantId), dishTo);
         ValidationUtil.assureIdConsistent(dish, dishId);
         dishRepository.save(dish, restaurantId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value ="/{restaurantId}/dishes/enabled", produces = MediaType.APPLICATION_JSON_VALUE )

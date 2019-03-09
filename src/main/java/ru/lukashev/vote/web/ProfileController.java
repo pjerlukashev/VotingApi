@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.lukashev.vote.model.User;
@@ -13,6 +14,7 @@ import ru.lukashev.vote.repository.UserRepository;
 import ru.lukashev.vote.to.UserTo;
 import ru.lukashev.vote.util.UserUtil;
 import ru.lukashev.vote.util.ValidationUtil;
+import javax.validation.Valid;
 import java.net.URI;
 
 import static ru.lukashev.vote.util.UserUtil.updateFromTo;
@@ -43,8 +45,11 @@ public class ProfileController {
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<User> register(@RequestBody UserTo userTo) {
+    public ResponseEntity<Object> register(@RequestBody @Valid UserTo userTo, BindingResult result) {
         log.info("create user {}", userTo);
+        if (result.hasErrors()) {
+        return ValidationUtil.getResponseEntityWithErrorMessage(result);
+        }
         User user = UserUtil.createNewFromTo(userTo);
         checkNew(user);
         User created = repository.save(user);
@@ -57,13 +62,14 @@ public class ProfileController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody UserTo userTo) {
+    public ResponseEntity<Object> update(@RequestBody  @Valid UserTo userTo, BindingResult result) {
         log.info("update user {} with id={}", userTo, SecurityUtil.authUserId());
+        if (result.hasErrors()) {
+            return ValidationUtil.getResponseEntityWithErrorMessage(result);
+        }
         User user = updateFromTo(repository.get(userTo.getId()), userTo);
         ValidationUtil.assureIdConsistent(user, SecurityUtil.authUserId());
         repository.save(user);
-    }
-
-    public void login(UserTo userTo) {//написать метод
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

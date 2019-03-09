@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.lukashev.vote.model.User;
@@ -14,6 +15,7 @@ import ru.lukashev.vote.to.UserTo;
 import ru.lukashev.vote.util.UserUtil;
 import ru.lukashev.vote.util.ValidationUtil;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -40,8 +42,11 @@ public class AdminUserController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> createWithLocation(@RequestBody UserTo userTo) {
+    public ResponseEntity<Object> createWithLocation(@RequestBody @Valid UserTo userTo, BindingResult result) {
         log.info("create user {}", userTo);
+        if (result.hasErrors()) {
+            return ValidationUtil.getResponseEntityWithErrorMessage(result);
+        }
         User user = UserUtil.createNewFromTo(userTo);
         ValidationUtil.checkNew(user);
         User created = repository.save(user);
@@ -61,11 +66,15 @@ public class AdminUserController {
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody UserTo userTo, @PathVariable("id") int id) {
+    public ResponseEntity<Object> update(@RequestBody @Valid UserTo userTo, @PathVariable("id") int id, BindingResult result) {
         log.info("update user {} with id={}", userTo, id);
+        if (result.hasErrors()) {
+            return ValidationUtil.getResponseEntityWithErrorMessage(result);
+        }
         User user = UserUtil.updateFromTo(repository.get(userTo.getId()), userTo);
         ValidationUtil.assureIdConsistent(user, id);
         repository.save(user);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping(value = "/by", produces = MediaType.APPLICATION_JSON_VALUE)
